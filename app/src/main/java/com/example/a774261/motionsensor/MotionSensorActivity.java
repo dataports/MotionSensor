@@ -12,12 +12,12 @@ import android.widget.TextView;
 
 
 public class MotionSensorActivity extends AppCompatActivity implements SensorEventListener {
-
+    //object setup
     private SensorManager senSensorManager;
     private Sensor senAccelerometer;
     private long lastUpdate = 0;
     private float last_x, last_y, last_z;
-    private static final int SHAKE_THRESHOLD = 600;
+    private static final int SHAKE_THRESHOLD = 500;
     private Boolean drinkMade = false;
 
 
@@ -25,7 +25,7 @@ public class MotionSensorActivity extends AppCompatActivity implements SensorEve
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_motion_sensor);
-
+        //initialize listener
         senSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         senAccelerometer = senSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         senSensorManager.registerListener(this, senAccelerometer , SensorManager.SENSOR_DELAY_NORMAL);
@@ -45,7 +45,7 @@ public class MotionSensorActivity extends AppCompatActivity implements SensorEve
 
             long curTime = System.currentTimeMillis();
 
-            if ((curTime - lastUpdate) > 100) {
+            if ((curTime - lastUpdate) > 400) { //only change things if 100ms has passed
                 long diffTime = (curTime - lastUpdate);
                 lastUpdate = curTime;
 
@@ -59,11 +59,12 @@ public class MotionSensorActivity extends AppCompatActivity implements SensorEve
                         image.setImageResource(R.drawable.drink);
 
                     }
-                    else{
+                    else if(drinkMade){
                         drinkMade = false;
                         textView.setText("Shake to make a drink");
                         image.setImageResource(R.drawable.cocktailshakerpng);
                     }
+
 
                 }
 
