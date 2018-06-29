@@ -7,7 +7,8 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-
+import android.widget.ImageView;
+import android.widget.TextView;
 
 
 public class MotionSensorActivity extends AppCompatActivity implements SensorEventListener {
@@ -17,11 +18,14 @@ public class MotionSensorActivity extends AppCompatActivity implements SensorEve
     private long lastUpdate = 0;
     private float last_x, last_y, last_z;
     private static final int SHAKE_THRESHOLD = 600;
+    private Boolean drinkMade = false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_motion_sensor);
+
         senSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         senAccelerometer = senSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         senSensorManager.registerListener(this, senAccelerometer , SensorManager.SENSOR_DELAY_NORMAL);
@@ -32,6 +36,8 @@ public class MotionSensorActivity extends AppCompatActivity implements SensorEve
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
         Sensor mySensor = sensorEvent.sensor;
+        ImageView image = (ImageView) findViewById(R.id.imageView);
+        TextView textView = (TextView) findViewById(R.id.textView);
         if (mySensor.getType() == Sensor.TYPE_ACCELEROMETER) {
             float x = sensorEvent.values[0];
             float y = sensorEvent.values[1];
@@ -46,6 +52,18 @@ public class MotionSensorActivity extends AppCompatActivity implements SensorEve
                 float speed = Math.abs(x + y + z - last_x - last_y - last_z)/ diffTime * 10000;
 
                 if (speed > SHAKE_THRESHOLD) {
+
+                    if(!drinkMade){
+                        drinkMade=true;
+                        textView.setText("You made a cocktail!");
+                        image.setImageResource(R.drawable.drink);
+
+                    }
+                    else{
+                        drinkMade = false;
+                        textView.setText("Shake to make a drink");
+                        image.setImageResource(R.drawable.cocktailshakerpng);
+                    }
 
                 }
 
